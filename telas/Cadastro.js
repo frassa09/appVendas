@@ -1,15 +1,15 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import USUARIO_CONTEXTO from '../components/usuario_context'
-import lerDados, { guardarDados, deletarTodosDados } from '../components/funcoes_armazenamento'
-import * as FileSystem from 'expo-file-system'
-import gerarID from '../components/gerarID'
+import assegurarExistencia, { incluirDados, resgatarDados, deletarTodosDados, apagarDiretorio } from '../components/dados_teste'
+import * as FileSystem from 'expo-file-system/legacy'
+import resgatarIDS, { gerarID } from '../components/IDs_functions'
 
 export default function Cadastro({verificarTela}) {
 
-    const ARQUIVO =  FileSystem.documentDirectory + 'meuApp/data/usuarios.json'
-    const {usuario, setUsuario} = useContext(USUARIO_CONTEXTO)
+    const dirPath = `${FileSystem.documentDirectory}/data/`
+    const path = `${dirPath}usuarios.json`
+
 
     const [mensagem, setMensagem] = useState('')
     const [username, setUsername] = useState('')
@@ -19,7 +19,7 @@ export default function Cadastro({verificarTela}) {
 
     const cadastrarUsuario = async () => {
 
-        
+        await assegurarExistencia(dirPath)
 
         console.log('funcao chamada')
         if(username.trim() == '' || telefone.trim() == '' || password.trim() == '' || confirmPassword.trim() == ''){
@@ -59,9 +59,25 @@ export default function Cadastro({verificarTela}) {
         }
 
         const telefoneLimpo = telefone.replace(/\D/g, '')
-        console.log(telefoneLimpo)
 
-        const ID = gerarID()
+
+        const DADOS_EXISTENTES = await resgatarDados(dirPath, path)
+        
+
+        for(let i in DADOS_EXISTENTES){
+
+          if(DADOS_EXISTENTES[i].telefone == telefoneLimpo){
+            setMensagem('O telefone que você está tentando cadastrar já existe em nossa base de dados, tente novamente com outro número')
+
+            setTimeout(() => {
+              setMensagem('')
+            }, 4000);
+
+            return
+          }
+        }
+
+        const ID = await gerarID()
 
 
         const objeto = {
@@ -71,13 +87,16 @@ export default function Cadastro({verificarTela}) {
             id: ID
         }
 
-        const DADOS_EXISTENTES = await lerDados(ARQUIVO)
 
-        DADOS_EXISTENTES.map()
 
-        const resposta = await guardarDados(ARQUIVO, objeto)
-
+        const resposta = await incluirDados(dirPath, path, objeto)
         console.log(resposta)
+
+        setMensagem('Cadastro concluído com sucesso, você já pode retornar à tela de login')
+
+        setTimeout(() => {
+          setMensagem('')
+        }, 4000);
     }
 
 
@@ -116,7 +135,7 @@ export default function Cadastro({verificarTela}) {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.btnCancel} onPress={() => deletarTodosDados(ARQUIVO)}>
+      <TouchableOpacity style={styles.btnCancel} onPress={() => deletarTodosDados(dirPath, path)}>
         <Text style={styles.textBtnCancel}>
             Cancelar
         </Text>

@@ -1,16 +1,45 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import USUARIO_CONTEXTO from '../components/usuario_context'
-import { Dimensions } from 'react-native'
+import { resgatarDados } from '../components/dados_teste'
+import * as FileSystem from 'expo-file-system/legacy'
 
-export default function Login({verificarTela}) {
+export default function Login({verificarTela, definirInformacao}) {
 
-  const {usuario, setUsuario} = useContext(USUARIO_CONTEXTO)
+  const dirPath = `${FileSystem.documentDirectory}/data/`
+  const path = `${dirPath}usuarios.json`
+
+
+  const [telefone, setTelefone] = useState('')
+  const [senha, setSenha] = useState('')
+  const [mensagem, setMensagem] = useState('')
+
+  const verificarLogin = async () => {
+
+    const DADOS_EXISTENTES = await resgatarDados(dirPath, path)
+
+    const telefoneLimpo = telefone.replaceAll(/\D/g, '')
+
+    for(const i in DADOS_EXISTENTES){
+
+      if(telefoneLimpo.trim() == DADOS_EXISTENTES[i].telefone && senha.trim() == DADOS_EXISTENTES[i].password){
+        definirInformacao(DADOS_EXISTENTES[i].id)
+        verificarTela('inicial')
+        return
+      }
+    }
+
+    setMensagem('O telefone ou a senha estão incorretos')
+
+    setTimeout(() => {
+      setMensagem('')
+    }, 4000);
+  }
+
+
 
 
   return (
-
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.botaoMatriz} onPress={() => verificarTela('matriz')}>
         <Text>
@@ -25,12 +54,13 @@ export default function Login({verificarTela}) {
 
       <Image source={require('../imagens/logo.png')} style={styles.logo} resizeMode='contain'></Image>
 
+      <Text style={styles.mensagem}>{mensagem}</Text>
       <Text style={styles.desc}>Telefone</Text>
-      <TextInput style={styles.inputs} placeholder='(ddd) 9 xxxx-xxxx'></TextInput>
+      <TextInput style={styles.inputs} placeholder='(ddd) 9 xxxx-xxxx' onChangeText={(text) => setTelefone(text)}></TextInput>
       <Text style={styles.desc}>Senha</Text>
-      <TextInput style={styles.inputs} placeholder='******'></TextInput>
+      <TextInput style={styles.inputs} placeholder='******' onChangeText={(text) => setSenha(text)}></TextInput>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => verificarLogin()}>
         <Text style={styles.textBtnLgn}>
           Entrar
         </Text>
@@ -42,9 +72,6 @@ export default function Login({verificarTela}) {
         </Text>
       </TouchableOpacity>
       </View>
-
-
-
 
     </SafeAreaView>
     
@@ -95,5 +122,9 @@ const styles = StyleSheet.create({
   logo: {
     justifyContent: 'center',
     width: 250
+  },
+  mensagem: {
+    textAlign: 'center',
+    marginBottom: 8
   }
 })

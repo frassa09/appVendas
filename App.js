@@ -1,32 +1,35 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import Login from '../../telas/Login'
-import Cadastro from '../../telas/Cadastro'
-import Inicial from '../../telas/Inicial'
-import { USUARIO_PROVIDER } from '../../components/usuario_context'
+import Login from './telas/Login'
+import Cadastro from './telas/Cadastro'
+import Inicial from './telas/Inicial'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function Navigation() {
 
     const [tela, setTela] = useState('matriz')
+    const [usuario, setUsuario] = useState('')
 
     const verificarTela = (tela) => {
         setTela(tela)
     }
 
+    const definirInformacao = (informacao) => {
+    setUsuario(informacao)
+  }
+
     const escolherTela = () => {
 
       switch(tela){
-        case 'login': return <Login verificarTela={verificarTela}></Login>
+        case 'login': return <Login verificarTela={verificarTela} definirInformacao={definirInformacao}></Login>
         case 'cadastro': return <Cadastro verificarTela={verificarTela}></Cadastro>
-        case 'inicial': return <Inicial verificarTela={verificarTela}></Inicial>
+        case 'inicial': return <Inicial verificarTela={verificarTela} usuario={usuario}></Inicial>
         default: return <Login verificarTela={verificarTela}></Login>
       }
     }
 
 
   return (
-    <USUARIO_PROVIDER>
       <SafeAreaView style={styles.container}>
       {tela == 'matriz' ? (
         <View style={styles.div}>
@@ -51,14 +54,14 @@ export default function Navigation() {
         </View>
       ): escolherTela()}
     </SafeAreaView>
-    </USUARIO_PROVIDER>
+
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#6e9a81',
+    backgroundColor: 'white',
     justifyContent: 'center'
   },
   botoes: {
