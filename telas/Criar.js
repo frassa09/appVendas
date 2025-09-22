@@ -2,11 +2,17 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput,
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useContext, useState } from 'react'
 
-export default function Inicial({verificarTela, usuario}) {
+export default function Criar({verificarTela}) {
+
 
   const [valueSwitch, setValueSwitch] = useState(false)
 
-  console.log(valueSwitch)
+
+  const [nomeLoja, setNomeLoja] = useState('')
+  const [descLoja, setDescLoja] = useState('')
+  const [especialidade, setEspecialidade] = useState('')
+
+  const [endereco, setEndereco] = useState(null)
 
   return ( 
     <SafeAreaView style={styles.container}>
@@ -18,7 +24,7 @@ export default function Inicial({verificarTela, usuario}) {
 
 
 
-    <View style={styles.content}>
+    <ScrollView style={styles.content}>
 
       <View style={styles.criar}>
         
@@ -35,11 +41,11 @@ export default function Inicial({verificarTela, usuario}) {
         </Text>
 
 
-        <TextInput placeholder='Nome da loja' style={styles.input_nome}>
+        <TextInput placeholder='Nome da loja' style={styles.input_nome} onChangeText={(text) => setNomeLoja(text)}>
         </TextInput>
-        <TextInput placeholder='Breve descrição da loja' style={styles.input_desc}>
+        <TextInput placeholder='Breve descrição da loja' style={styles.input_desc} onChangeText={(text) => setDescLoja(text)}>
         </TextInput>
-        <TextInput placeholder='Especialidade (Ex: Sobremesas)' style={styles.input_espec}>
+        <TextInput placeholder='Especialidade (Ex: Sobremesas)' style={styles.input_espec} onChangeText={(text) => setEspecialidade(text)}>
         </TextInput>
 
         <Text style={styles.desc3}>
@@ -61,20 +67,20 @@ export default function Inicial({verificarTela, usuario}) {
         
         <View style={[valueSwitch ? styles.ativo : styles.desativado]}>
           
-          <TextInput placeholder='Insira o endereço da sua loja' style={styles.input_endereco}>
+          <TextInput placeholder='Insira o endereço da sua loja' style={styles.input_endereco} onChangeText={(text) => setEndereco(text)}>
           </TextInput>
         </View>
 
         <View style={styles.botoes_confirm}>
 
-          <TouchableOpacity>
-            <Text>
+          <TouchableOpacity style={styles.btnCancel} onPress={() => verificarTela('lojas')}>
+            <Text style={{color: '#0078BD'}}>
               Cancelar
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>
-              Salvar
+          <TouchableOpacity style={styles.btnConfirm}>
+            <Text style={{color: 'white'}}>
+              Salvar Loja
             </Text>
           </TouchableOpacity>
         </View>
@@ -82,17 +88,17 @@ export default function Inicial({verificarTela, usuario}) {
         
       </View>
 
-    </View>
+    </ScrollView>
 
     <View style={styles.barra_navegacao}>
       
       
-      <TouchableOpacity style={styles.botoes_navegacao_selec}>
+      <TouchableOpacity style={styles.botoes_navegacao_selec} onPress={() => verificarTela('inicial')}>
         <Text>
           Criar
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.botoes_navegacao}>
+      <TouchableOpacity style={styles.botoes_navegacao} onPress={() => verificarTela('lojas')}>
         <Text>
           Lojas
         </Text>
@@ -130,8 +136,8 @@ const styles = StyleSheet.create({
     },
     content: {
       flex: 1,
-      justifyContent: 'center',
-      marginBottom: 80
+      //justifyContent: 'center',
+      marginBottom: 30
     },
     img_inicio: {
       height: 50
@@ -200,12 +206,13 @@ const styles = StyleSheet.create({
     },
     desc4: {
       alignSelf: 'center',
+
       marginTop: 20,
       height: 40,
       width: 400,
       borderBottomWidth: 1,
-      textAlign: 'center',
-      borderColor: 'grey'
+      borderColor: 'grey',
+      margin: 20
     },
     view_switch: {
       alignItems: 'center',
@@ -231,5 +238,30 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       paddingLeft: 15,
       height: 50
+    },
+    btnCancel: {
+      backgroundColor: 'white',
+      borderColor: 'grey',
+      borderWidth: 0.5,
+      alignItems: 'center',
+      width: 80,
+      height: 40,
+      justifyContent: 'center',
+      borderRadius: 8
+    },
+    btnConfirm: {
+      backgroundColor: '#0078BD',
+      alignItems: 'center',
+      width: 80,
+      height: 40,
+      justifyContent: 'center',
+      borderRadius: 8
+    },
+    botoes_confirm: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginRight: 20,
+      gap: 10,
+      marginTop: 50
     }
 })

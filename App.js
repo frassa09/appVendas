@@ -2,20 +2,21 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Login from './telas/Login'
 import Cadastro from './telas/Cadastro'
-import Inicial from './telas/Inicial'
+import Criar from './telas/Criar'
+import Lojas from './telas/Lojas'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function Navigation() {
 
     const [tela, setTela] = useState('matriz')
-    const [usuario, setUsuario] = useState('')
+    const [id, setId] = useState('')
 
     const verificarTela = (tela) => {
         setTela(tela)
     }
 
     const definirInformacao = (informacao) => {
-    setUsuario(informacao)
+    setId(informacao)
   }
 
     const escolherTela = () => {
@@ -23,7 +24,8 @@ export default function Navigation() {
       switch(tela){
         case 'login': return <Login verificarTela={verificarTela} definirInformacao={definirInformacao}></Login>
         case 'cadastro': return <Cadastro verificarTela={verificarTela}></Cadastro>
-        case 'inicial': return <Inicial verificarTela={verificarTela} usuario={usuario}></Inicial>
+        case 'criar': return <Criar verificarTela={verificarTela}></Criar>
+        case 'lojas': return <Lojas verificarTela={verificarTela} id={id}></Lojas>
         default: return <Login verificarTela={verificarTela}></Login>
       }
     }
@@ -46,9 +48,14 @@ export default function Navigation() {
           Cadastro
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.botoes} onPress={() => {setTela('inicial')}}>
+        <TouchableOpacity style={styles.botoes} onPress={() => {setTela('criar')}}>
           <Text>
-          Inicial
+          Criar
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botoes} onPress={() => {setTela('lojas')}}>
+          <Text>
+          Lojas
           </Text>
         </TouchableOpacity>
         </View>

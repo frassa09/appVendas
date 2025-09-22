@@ -10,7 +10,7 @@ export default async function assegurarExistencia(dirPath) {
             await FileSystem.makeDirectoryAsync(dirPath, {intermediates: true})
         }
 
-        console.log('Diretório criado com sucesso ou já existe')
+        console.log('Existência assegurada')
     }
     catch(e){
         console.log('Ocorreu algum erro ao comunicar com diretório: ' + e )

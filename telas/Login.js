@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { resgatarDados } from '../components/dados_teste'
 import * as FileSystem from 'expo-file-system/legacy'
@@ -24,7 +24,7 @@ export default function Login({verificarTela, definirInformacao}) {
 
       if(telefoneLimpo.trim() == DADOS_EXISTENTES[i].telefone && senha.trim() == DADOS_EXISTENTES[i].password){
         definirInformacao(DADOS_EXISTENTES[i].id)
-        verificarTela('inicial')
+        verificarTela('lojas')
         return
       }
     }
