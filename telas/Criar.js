@@ -1,6 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, Switch } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, Switch, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useContext, useState } from 'react'
+import { endEvent } from 'react-native/Libraries/Performance/Systrace'
+import { incluirDados } from '../components/dados_teste'
+import * as FileSystem from 'expo-file-system/legacy'
+import { gerarID } from '../components/IDs_functions'
 
 export default function Criar({verificarTela}) {
 
@@ -13,6 +17,41 @@ export default function Criar({verificarTela}) {
   const [especialidade, setEspecialidade] = useState('')
 
   const [endereco, setEndereco] = useState(null)
+
+  const cadastrarLoja = async () => {
+
+    if(!nomeLoja.trim() || !descLoja.trim() || !especialidade.trim()){
+      Alert.alert('Algum dos campos obrigatórios ficou vazio')
+      return
+    }
+
+    const idLoja = await gerarID(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/ids_lojas.json`)
+  
+    const loja = {
+      nomeLoja: nomeLoja.trim(),
+      descLoja: descLoja.trim(),
+      especialidade: especialidade.trim(),
+      endereco: endereco ? endereco : "Nenhum endereço informado",
+      idLoja: idLoja
+    }
+
+    setNomeLoja('')
+    setDescLoja('')
+    setEspecialidade('')
+    setEndereco(null)
+  
+    try{
+
+      await incluirDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/lojas_usuarios.json`, loja)
+
+      console.log('Loja criada com sucesso')
+      Alert.alert('Sua loja foi criada com sucesso')
+    }
+    catch(e){
+      console.log('Ocorreu um erro ao criar sua loja: ' + e)
+      Alert.alert(`Ocorreu um erro ao criar sua loja: ${e}`)
+    }
+  }
 
   return ( 
     <SafeAreaView style={styles.container}>
@@ -41,11 +80,11 @@ export default function Criar({verificarTela}) {
         </Text>
 
 
-        <TextInput placeholder='Nome da loja' style={styles.input_nome} onChangeText={(text) => setNomeLoja(text)}>
+        <TextInput placeholder='Nome da loja *' value={nomeLoja} style={styles.input_nome} onChangeText={(text) => setNomeLoja(text)}>
         </TextInput>
-        <TextInput placeholder='Breve descrição da loja' style={styles.input_desc} onChangeText={(text) => setDescLoja(text)}>
+        <TextInput placeholder='Breve descrição da loja *' value={descLoja} style={styles.input_desc} onChangeText={(text) => setDescLoja(text)}>
         </TextInput>
-        <TextInput placeholder='Especialidade (Ex: Sobremesas)' style={styles.input_espec} onChangeText={(text) => setEspecialidade(text)}>
+        <TextInput placeholder='Especialidade (Ex: Sobremesas) *' value={especialidade} style={styles.input_espec} onChangeText={(text) => setEspecialidade(text)}>
         </TextInput>
 
         <Text style={styles.desc3}>
@@ -67,7 +106,7 @@ export default function Criar({verificarTela}) {
         
         <View style={[valueSwitch ? styles.ativo : styles.desativado]}>
           
-          <TextInput placeholder='Insira o endereço da sua loja' style={styles.input_endereco} onChangeText={(text) => setEndereco(text)}>
+          <TextInput placeholder='Insira o endereço da sua loja' value={endereco} style={styles.input_endereco} onChangeText={(text) => setEndereco(text)}>
           </TextInput>
         </View>
 
@@ -78,7 +117,7 @@ export default function Criar({verificarTela}) {
               Cancelar
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnConfirm}>
+          <TouchableOpacity style={styles.btnConfirm} onPress={() => cadastrarLoja()}>
             <Text style={{color: 'white'}}>
               Salvar Loja
             </Text>

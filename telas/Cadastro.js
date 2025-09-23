@@ -7,8 +7,8 @@ import resgatarIDS, { gerarID } from '../components/IDs_functions'
 
 export default function Cadastro({verificarTela}) {
 
-    const dirPath = `${FileSystem.documentDirectory}/data/`
-    const path = `${dirPath}usuarios.json`
+    const dirPathUsuarios = `${FileSystem.documentDirectory}data/`
+    const pathUsuarios = `${dirPathUsuarios}usuarios.json`
 
 
     const [mensagem, setMensagem] = useState('')
@@ -19,7 +19,7 @@ export default function Cadastro({verificarTela}) {
 
     const cadastrarUsuario = async () => {
 
-        await assegurarExistencia(dirPath)
+        await assegurarExistencia(dirPathUsuarios)
 
         console.log('funcao chamada')
         if(username.trim() == '' || telefone.trim() == '' || password.trim() == '' || confirmPassword.trim() == ''){
@@ -61,7 +61,7 @@ export default function Cadastro({verificarTela}) {
         const telefoneLimpo = telefone.replace(/\D/g, '')
 
 
-        const DADOS_EXISTENTES = await resgatarDados(dirPath, path)
+        const DADOS_EXISTENTES = await resgatarDados(dirPathUsuarios, pathUsuarios)
         
 
         for(let i in DADOS_EXISTENTES){
@@ -77,7 +77,7 @@ export default function Cadastro({verificarTela}) {
           }
         }
 
-        const ID = await gerarID()
+        const ID = await gerarID(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/ids_cad.json`)
 
 
         const objeto = {
@@ -89,7 +89,7 @@ export default function Cadastro({verificarTela}) {
 
 
 
-        const resposta = await incluirDados(dirPath, path, objeto)
+        const resposta = await incluirDados(dirPathUsuarios, pathUsuarios, objeto)
         console.log(resposta)
 
         setMensagem('Cadastro concluído com sucesso, você já pode retornar à tela de login')
@@ -135,7 +135,7 @@ export default function Cadastro({verificarTela}) {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.btnCancel} onPress={() => deletarTodosDados(dirPath, path)}>
+      <TouchableOpacity style={styles.btnCancel} onPress={() => deletarTodosDados(dirPathUsuarios, pathUsuarios)}>
         <Text style={styles.textBtnCancel}>
             Cancelar
         </Text>

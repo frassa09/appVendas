@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedbackComponent, ScrollView } from 'react-native'
 import React, { use, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { resgatarDados } from '../components/dados_teste'
@@ -7,17 +7,19 @@ import * as FileSystem from 'expo-file-system/legacy'
 export default function Lojas({verificarTela, id}) {
 
 
-    const dirPath = `${FileSystem.documentDirectory}/data/`
-    const path = `${dirPath}usuarios.json`
+    const dirPathUsuarios = `${FileSystem.documentDirectory}data/`
+    const pathUsuarios = `${dirPathUsuarios}usuarios.json`
 
     const [dadosUsuario, setDadosUsuario] = useState(null)
     const [indexUsuario, setIndexUsuario] = useState(null)
+    const [lojasExistem, setLojasExistem] = useState(false)
+    const [lojas, setLojas] = useState(null)
 
     useEffect(() => {
 
         const carregarDados = async () => {
             try{
-                const resposta = await resgatarDados(dirPath, path)
+                const resposta = await resgatarDados(dirPathUsuarios, pathUsuarios)
 
                 setDadosUsuario(resposta)
             }
@@ -45,6 +47,37 @@ export default function Lojas({verificarTela, id}) {
         }
     }, [dadosUsuario])
 
+    useEffect(() => {
+
+        const resgatarLojas = async () => {
+
+            try{
+
+                const resposta = await resgatarDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/lojas_usuarios.json`)
+
+                setLojas(resposta)
+                
+            }
+            catch(e){
+                console.log(`Ocorreu algum erro ao carregar as lojas: ${e}`)
+                return
+            }
+        }
+
+        resgatarLojas()
+
+    }, [])
+
+    useEffect(() => {
+
+        if(lojas != ''){
+            setLojasExistem(true)
+        }
+        else{
+            setLojasExistem(false)
+        }
+    }, [lojas])
+
 
     if(!dadosUsuario || indexUsuario == undefined || indexUsuario == null){
         return(
@@ -53,6 +86,8 @@ export default function Lojas({verificarTela, id}) {
             </Text>
         )
     }
+
+    
     
 
   return (
@@ -70,7 +105,7 @@ export default function Lojas({verificarTela, id}) {
 
     <View style={styles.content}>
 
-        <View style={styles.sem_loja}>
+        <View style={lojasExistem ? styles.desativado : styles.sem_loja}>
         <Text style={styles.desc1}>
             Nenhum segmento de loja encontrado!
         </Text>
@@ -84,6 +119,30 @@ export default function Lojas({verificarTela, id}) {
             </Text>
         </TouchableOpacity>
         </View>
+
+
+        <ScrollView style={[lojasExistem ? styles.lojas : styles.desativado]}>
+            
+            {lojas.map((loja) => {
+
+                return(
+                    <TouchableOpacity key={loja.idLoja} style={styles.botaoLoja}>
+                        <Text style={styles.nomeLoja}>
+                            {loja.nomeLoja}
+                        </Text>
+                        <Text style={styles.descLoja}>
+                            {loja.descLoja}
+                        </Text>
+                        <Text style={styles.especialidade}>
+                            Especialidade: {loja.especialidade}
+                        </Text>
+                        <Text>
+                            Endereço: {loja.endereco}
+                        </Text>
+                    </TouchableOpacity>
+                )
+            })}
+        </ScrollView>
     </View>
 
 
@@ -168,6 +227,23 @@ const styles = StyleSheet.create({
     textOla: {
         fontSize: 25,
         margin: 10
+    },
+    desativado: {
+        display: 'none'
+    },
+    botaoLoja: {
+        borderWidth: 0.5,
+        justifyContent: 'center',
+        width: 350,
+        alignSelf: 'center',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 20
+    },
+    nomeLoja: {
+        fontWeight: 'bold',
+        fontSize: 25,
+        marginBottom: 8
     }
     
 })

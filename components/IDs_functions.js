@@ -31,10 +31,8 @@ export default async function resgatarIDS(dirPath, path){
 
 }
 
-export async function gerarID(){
+export async function gerarID(dirPath, path){
 
-    const dirPath = `${FileSystem.documentDirectory}/data/`
-    const path = `${dirPath}ids_cad.json`
 
     let ID_GERADO = Math.floor(Math.random() * 1000000)
 

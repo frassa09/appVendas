@@ -5,6 +5,8 @@ import Cadastro from './telas/Cadastro'
 import Criar from './telas/Criar'
 import Lojas from './telas/Lojas'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { deletarTodosDados } from './components/dados_teste'
+import * as FileSystem from 'expo-file-system/legacy'
 
 export default function Navigation() {
 
@@ -13,6 +15,14 @@ export default function Navigation() {
 
     const verificarTela = (tela) => {
         setTela(tela)
+    }
+
+    const apagarDados = async () => {
+
+      await deletarTodosDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/usuarios.json`)
+      await deletarTodosDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/lojas_usuarios.json`)
+      await deletarTodosDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/ids_cad.json`)
+      await deletarTodosDados(`${FileSystem.documentDirectory}data`, `${FileSystem.documentDirectory}data/ids_lojas.json`)
     }
 
     const definirInformacao = (informacao) => {
@@ -56,6 +66,11 @@ export default function Navigation() {
         <TouchableOpacity style={styles.botoes} onPress={() => {setTela('lojas')}}>
           <Text>
           Lojas
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botoes} onPress={() => apagarDados()}>
+          <Text>
+          Apagar todos os dados
           </Text>
         </TouchableOpacity>
         </View>

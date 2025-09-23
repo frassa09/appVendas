@@ -6,8 +6,8 @@ import * as FileSystem from 'expo-file-system/legacy'
 
 export default function Login({verificarTela, definirInformacao}) {
 
-  const dirPath = `${FileSystem.documentDirectory}/data/`
-  const path = `${dirPath}usuarios.json`
+  const dirPathUsuarios = `${FileSystem.documentDirectory}data/`
+  const pathUsuarios = `${dirPathUsuarios}usuarios.json`
 
 
   const [telefone, setTelefone] = useState('')
@@ -16,7 +16,7 @@ export default function Login({verificarTela, definirInformacao}) {
 
   const verificarLogin = async () => {
 
-    const DADOS_EXISTENTES = await resgatarDados(dirPath, path)
+    const DADOS_EXISTENTES = await resgatarDados(dirPathUsuarios, pathUsuarios)
 
     const telefoneLimpo = telefone.replaceAll(/\D/g, '')
 
