@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import assegurarExistencia, { incluirDados, resgatarDados, deletarTodosDados, apagarDiretorio } from '../components/dados_teste'
@@ -135,9 +135,9 @@ export default function Cadastro({verificarTela}) {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.btnCancel} onPress={() => deletarTodosDados(dirPathUsuarios, pathUsuarios)}>
+      <TouchableOpacity style={styles.btnCancel} onPress={() => verificarTela('login')}>
         <Text style={styles.textBtnCancel}>
-            Cancelar
+            Voltar para login
         </Text>
       </TouchableOpacity>
 

@@ -34,7 +34,7 @@ export default function Navigation() {
       switch(tela){
         case 'login': return <Login verificarTela={verificarTela} definirInformacao={definirInformacao}></Login>
         case 'cadastro': return <Cadastro verificarTela={verificarTela}></Cadastro>
-        case 'criar': return <Criar verificarTela={verificarTela}></Criar>
+        case 'criar': return <Criar verificarTela={verificarTela} id={id}></Criar>
         case 'lojas': return <Lojas verificarTela={verificarTela} id={id}></Lojas>
         default: return <Login verificarTela={verificarTela}></Login>
       }

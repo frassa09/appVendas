@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, Switch, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useContext, useState } from 'react'
-import { endEvent } from 'react-native/Libraries/Performance/Systrace'
 import { incluirDados } from '../components/dados_teste'
 import * as FileSystem from 'expo-file-system/legacy'
 import { gerarID } from '../components/IDs_functions'
 
-export default function Criar({verificarTela}) {
+export default function Criar({verificarTela, id}) {
 
+  const idUsuario = id
 
   const [valueSwitch, setValueSwitch] = useState(false)
 
@@ -32,7 +32,8 @@ export default function Criar({verificarTela}) {
       descLoja: descLoja.trim(),
       especialidade: especialidade.trim(),
       endereco: endereco ? endereco : "Nenhum endereço informado",
-      idLoja: idLoja
+      idLoja: idLoja,
+      idUsuario: idUsuario
     }
 
     setNomeLoja('')

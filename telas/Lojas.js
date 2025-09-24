@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system/legacy'
 
 export default function Lojas({verificarTela, id}) {
 
+    const idUsuario = id
 
     const dirPathUsuarios = `${FileSystem.documentDirectory}data/`
     const pathUsuarios = `${dirPathUsuarios}usuarios.json`
@@ -38,7 +39,7 @@ export default function Lojas({verificarTela, id}) {
 
         if(dadosUsuario){
             for(let usuario of dadosUsuario){
-                if(usuario.id == id){
+                if(usuario.id == idUsuario){
                     setIndexUsuario(dadosUsuario.indexOf(usuario))
                     console.log(dadosUsuario.indexOf(usuario))
                     break
@@ -70,12 +71,19 @@ export default function Lojas({verificarTela, id}) {
 
     useEffect(() => {
 
-        if(lojas != ''){
-            setLojasExistem(true)
-        }
-        else{
-            setLojasExistem(false)
-        }
+        if(lojas){
+        lojas.map((loja) => {
+
+            if(loja.idUsuario == id){
+                setLojasExistem(true)
+                return
+            }
+        })
+    }else{
+        setLojasExistem(false)
+    }
+
+        console.log(lojasExistem)
     }, [lojas])
 
 
@@ -125,6 +133,7 @@ export default function Lojas({verificarTela, id}) {
             
             {lojas.map((loja) => {
 
+                if(loja.idUsuario == idUsuario){
                 return(
                     <TouchableOpacity key={loja.idLoja} style={styles.botaoLoja}>
                         <Text style={styles.nomeLoja}>
@@ -141,6 +150,7 @@ export default function Lojas({verificarTela, id}) {
                         </Text>
                     </TouchableOpacity>
                 )
+            }
             })}
         </ScrollView>
     </View>
